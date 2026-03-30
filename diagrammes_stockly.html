@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stockly - Diagrammes Techniques</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #28a745;
+            --primary-dark: #1e7e34;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --accent: #e9ecef;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .diagram-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 1000px;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: auto;
+        }
+
+        .diagram-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .diagram-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Print styling for screenshots */
+        @media print {
+            .controls, .header p { display: none; }
+            body { padding: 0; background: white; }
+            .diagram-container { box-shadow: none; border: 1px solid #eee; break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Stockly - Documentation Technique</h1>
+        <p>Diagrammes de conception pour FIGEC Microfinance</p>
+    </div>
+
+    <!-- 1. ERD / MCD -->
+    <div class="diagram-container">
+        <div class="diagram-title">
+            <span class="badge">Conception</span> 
+            1. Modèle Conceptuel de Données (MCD / ERD)
+        </div>
+        <div class="mermaid">
+        erDiagram
+            USERS {
+                int id PK
+                string username
+                string password
+                string role
+                string email
+            }
+            SUPPLIERS {
+                int id PK
+                string name
+                string company_num
+                string contact
+                string phone
+            }
+            PRODUCTS {
+                int id PK
+                string name
+                decimal price
+                int supplier_id FK
+                int threshold
+            }
+            ORDERS {
+                int id PK
+                int guichet_user_id FK
+                string status
+                datetime date_created
+                datetime date_updated
+            }
+            ORDER_ITEMS {
+                int order_id PK, FK
+                int product_id PK, FK
+                int quantity
+            }
+            STOCK {
+                int product_id PK, FK
+                int current_stock
+            }
+
+            USERS ||--o{ ORDERS : "cree"
+            SUPPLIERS ||--o{ PRODUCTS : "fournit"
+            PRODUCTS ||--o{ ORDER_ITEMS : "est contenu dans"
+            ORDERS ||--|{ ORDER_ITEMS : "contient"
+            PRODUCTS ||--|| STOCK : "a un"
+        </div>
+    </div>
+
+    <!-- 2. Cas d'Utilisation -->
+    <div class="diagram-container">
+        <div class="diagram-title">
+            <span class="badge">Analyse</span> 
+            2. Diagramme de Cas d'Utilisation (Use Case)
+        </div>
+        <div class="mermaid">
+        graph LR
+            subgraph "Système Stockly"
+                UC1((S'authentifier))
+                UC2((Créer un Bon de Commande))
+                UC3((Consulter l'Inventaire))
+                UC4((Approuver/Livrer Commande))
+                UC5((Gérer les Utilisateurs))
+                UC6((Gérer les Produits/Fournisseurs))
+                UC7((Générer des Rapports))
+            end
+
+            Guichet((Guichet)) --> UC1
+            Guichet --> UC2
+
+            Stock((Gérant Stock)) --> UC1
+            Stock --> UC3
+            Stock --> UC4
+            Stock --> UC6
+            Stock --> UC7
+
+            Admin((Administrateur)) --> UC1
+            Admin --> UC5
+            Admin --> UC3
+            Admin --> UC4
+            Admin --> UC6
+            Admin --> UC7
+            
+            style Guichet fill:#e1f5fe,stroke:#01579b
+            style Stock fill:#e8f5e9,stroke:#1b5e20
+            style Admin fill:#fff3e0,stroke:#e65100
+            style UC2 fill:#c8e6c9,stroke:#2e7d32
+        </div>
+    </div>
+
+    <!-- 3. Séquence -->
+    <div class="diagram-container">
+        <div class="diagram-title">
+            <span class="badge">Dynamique</span> 
+            3. Diagramme de Séquence (Cycle de Vie d'un Bon)
+        </div>
+        <div class="mermaid">
+        sequenceDiagram
+            autonumber
+            actor G as Guichet
+            actor S as Gérant Stock
+            participant P as Interface Commande
+            participant API as api/orders.php
+            participant DB as Base de Données (MySQL)
+
+            Note over G, P: Création du Bon
+            G->>P: Remplit le formulaire de commande
+            G->>P: Valide la liste des articles
+            P->>API: POST action=create (JSON items)
+            API->>DB: INSERT orders + order_items
+            DB-->>API: Succès (ID Commande)
+            API-->>P: Confirmation JSON
+            P-->>G: Alerte "Commande enregistrée"
+
+            Note over S: Traitement par le Stock
+            S->>P: Consulte les commandes "En attente"
+            S->>API: GET action=update_status (delivered)
+            
+            alt Statut = Delivered
+                API->>DB: UPDATE orders SET status='delivered'
+                API->>DB: INSERT/UPDATE stock (Mise à jour quantités)
+            end
+            
+            DB-->>API: OK
+            API-->>S: Statut mis à jour avec succès
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="window.print()">Imprimer / Sauvegarder PDF</button>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#28a745',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#1e7e34',
+                lineColor: '#28a745',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#fff'
+            }
+        });
+    </script>
+</body>
+</html>

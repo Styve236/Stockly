@@ -1,0 +1,82 @@
+/* Stockly Theme: White & Green for FIGEC */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+:root {
+    --primary-green: #28a745;
+    --green-dark: #218838;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --border-gray: #dee2e6;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--primary-green), var(--green-dark)) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand, .nav-link {
+    color: var(--white) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.btn-primary:hover {
+    background-color: var(--green-dark);
+    border-color: var(--green-dark);
+}
+
+.card {
+    background: var(--white);
+    border: 1px solid var(--border-gray);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 10px;
+}
+
+.table {
+    background: var(--white);
+}
+
+.alert-low-stock {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+#chart-container {
+    height: 400px;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px;
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.login-container h1 {
+    color: var(--primary-green) !important;
+}
+
+.status-pending { color: #ffc107; }
+.status-approved { color: #007bff; }
+.status-delivered { color: var(--primary-green); }
+
+.low-stock { background-color: #f8d7da !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-container { margin: 20px; padding: 20px; }
+}
+
